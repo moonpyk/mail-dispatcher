@@ -39,7 +39,8 @@ def main():
             cfg.get('Configuration', 'imap_password')
         )
 
-    except (NoSectionError, NoOptionError):
+    except (NoSectionError, NoOptionError) as e:
+        print(e, sys.stderr)
         sys.exit(ERROR_CODES['ERR_CONFIG'])
 
     mail_client.select()
