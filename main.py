@@ -105,12 +105,12 @@ def handle_email(cfg, mail_data):
     was_parsed = False
 
     for (command, syscmd) in cfg.items('Commands'):
-        if mail_subject == command:
+        if mail_subject == command.lower():
             was_parsed = True
             try:
                 final_code = exec_cmd(syscmd, parsed_mail)
             except Exception as e:
-                final_code = -2
+                final_code = -20
                 print(e, sys.stderr)
             break
 
