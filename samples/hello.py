@@ -8,8 +8,11 @@ def main(mail_from, subject, message):
     print("Mail : {0} '{1}' -> {1}".format(mail_from, subject, message))
 
     msg = MIMEMultipart()
+
     msg['Subject'] = "Coucou"
     msg['From'] = 'rpi-controle-lr@home.moonpyk.net'
+    msg['To'] = mail_from
+
     msg.attach(MIMEText("Coucou {0}, le sujet etait '{1}' !".format(mail_from, subject)))
 
     client = smtplib.SMTP('192.168.1.254')
