@@ -130,6 +130,7 @@ def exec_cmd(syscmd, parsed):
     args.append(parsed['subject'])
 
     new_env = os.environ.copy()
+    new_env["FROM_MAIL"] = "True"
     new_env["MD_FROM"] = parsed['from']
     new_env["MD_SUBJECT"] = parsed['subject']
     new_env["MD_MESSAGE"] = parsed['message']
