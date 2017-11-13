@@ -23,7 +23,7 @@ ERROR_CODES = {
     'ERR_CONFIG': 1,
 }
 
-DELETE = False
+DELETE = True
 
 
 def main():
