@@ -9,6 +9,7 @@ import subprocess
 import sys
 from ConfigParser import *
 from cgi import escape
+from email.message import Message
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
@@ -21,6 +22,8 @@ LOOKUP_TABLE = [
 ERROR_CODES = {
     'ERR_CONFIG': 1,
 }
+
+DELETE = False
 
 
 def main():
@@ -53,7 +56,7 @@ def main():
         _, mail_data = mail_client.fetch(mail_id, '(RFC822)')
 
         for part in mail_data:
-            if isinstance(part, tuple) and handle_email(cfg, part):
+            if isinstance(part, tuple) and handle_email(cfg, part) and DELETE:
                 # Mark the mail for deletion
                 mail_client.store(mail_id, '+FLAGS', '\\Deleted')
 
@@ -70,13 +73,27 @@ def open_config():
 def handle_email(cfg, mail_data):
     mail = email.message_from_string(mail_data[1])
 
+    assert isinstance(mail, Message)
+
     mail_from = email.utils.parseaddr(mail.get('From'))[1]
     mail_subject = mail.get('Subject').lower().strip()
+    mail_payload = None
 
     # noinspection PyBroadException
     try:
-        mail_payload = str(mail.get_payload(decode=True)).strip()
-    except:
+        raw_payload = mail.get_payload()
+
+        if isinstance(raw_payload, str):
+            mail_payload = str(raw_payload).strip()
+
+        elif isinstance(raw_payload, list):
+            for part in raw_payload:
+                if isinstance(part, Message) and part.get_content_type() == 'text/plain':
+                    mail_payload = str(part.get_payload(decode=True)).strip()
+                    break
+
+    except Exception as e:
+        print(e, sys.stderr)
         return False
 
     if len(mail_from) == 0 or len(mail_subject) == 0 or mail_payload is None or len(mail_payload) == 0:
