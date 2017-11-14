@@ -96,7 +96,10 @@ def handle_email(cfg, mail_data):
         print(e, sys.stderr)
         return False
 
-    if len(mail_from) == 0 or len(mail_subject) == 0 or mail_payload is None or len(mail_payload) == 0:
+    if mail_payload is None:
+        mail_payload = ''
+
+    if len(mail_from) == 0 or len(mail_subject) == 0:
         return False
 
     admins = []
