@@ -7,11 +7,16 @@ import os
 import smtplib
 import subprocess
 import sys
-from ConfigParser import *
-from cgi import escape
 from email.message import Message
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+
+try:
+    # noinspection PyCompatibility
+    from configparser import *
+except ImportError:
+    # noinspection PyCompatibility
+    from ConfigParser import *
 
 LOOKUP_TABLE = [
     "./mail-dispatch.conf",
@@ -24,6 +29,17 @@ ERROR_CODES = {
 }
 
 DELETE = True
+
+
+# noinspection PyCompatibility,PyDeprecation
+def html_escape(s):
+    if sys.version_info[0] > 3:
+        from html import escape
+        return escape(s)
+
+    else:
+        from cgi import escape
+        return escape(s)
 
 
 def main():
@@ -183,7 +199,7 @@ def notify_admin(cfg, admins, parsed_mail, was_parsed, final_code):
     # Escaping string values, just in case they contain HTML
     for k in mail_vars:
         if isinstance(mail_vars[k], str):
-            mail_vars[k] = escape(mail_vars[k])
+            mail_vars[k] = html_escape(mail_vars[k])
 
     content = """<html>
 <head>
