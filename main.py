@@ -87,7 +87,9 @@ def open_config():
 
 
 def handle_email(cfg, mail_data):
-    mail = email.message_from_string(mail_data[1])
+    encoded = str(mail_data[1])
+
+    mail = email.message_from_string(encoded)
 
     assert isinstance(mail, Message)
 
