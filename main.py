@@ -94,7 +94,7 @@ def handle_email(cfg, mail_data):
     assert isinstance(mail, Message)
 
     mail_from = email.utils.parseaddr(mail.get('From'))[1]
-    mail_subject = mail.get('Subject').lower().strip()
+    mail_subject = mail.get('Subject', '').lower().strip()
     mail_payload = None
 
     # noinspection PyBroadException
