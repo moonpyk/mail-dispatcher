@@ -33,7 +33,7 @@ DELETE = True
 
 # noinspection PyCompatibility,PyDeprecation
 def html_escape(s):
-    if sys.version_info[0] > 3:
+    if sys.version_info[0] >= 3:
         from html import escape
         return escape(s)
 
